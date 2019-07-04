@@ -18,6 +18,7 @@ type Options struct {
 	PrettyTables        bool                 // Turns on pretty ASCII rendering for table elements.
 	PrettyTablesOptions *PrettyTablesOptions // Configures pretty ASCII rendering for table elements.
 	OmitLinks           bool                 // Turns on omitting links
+	OmitBAndStrongTags  bool                 // Turns on omitting <b> and <strong> tags
 }
 
 // PrettyTablesOptions overrides tablewriter behaviors
@@ -230,6 +231,9 @@ func (ctx *textifyTraverseContext) handleElement(node *html.Node) error {
 			return err
 		}
 		str := subCtx.buf.String()
+		if ctx.options.OmitBAndStrongTags {
+			return ctx.emit(str)
+		}
 		return ctx.emit("*" + str + "*")
 
 	case atom.A:
